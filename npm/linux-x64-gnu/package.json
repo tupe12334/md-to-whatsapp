@@ -1,5 +1,5 @@
 {
-  "name": "@md-to-whatsapp/linux-x64-gnu",
+  "name": "md-to-whatsapp-linux-x64-gnu",
   "version": "0.2.1",
   "description": "Linux x64 (glibc) binary for md-to-whatsapp",
   "repository": {

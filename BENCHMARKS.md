@@ -53,11 +53,11 @@ Comparison of CLI performance between the TypeScript and Rust implementations of
 
 Platform-specific packages (installed as optional dependencies):
 
-| Platform                       | Package                       | Binary Size |
-|--------------------------------|-------------------------------|-------------|
-| macOS ARM64 (M1/M2/M3)         | @md-to-whatsapp/darwin-arm64  | 1.7MB       |
-| Linux x64 (glibc)              | @md-to-whatsapp/linux-x64-gnu | 2.2MB       |
-| Windows x64                    | @md-to-whatsapp/win32-x64-msvc| 1.9MB       |
+| Platform                       | Package                        | Binary Size |
+|--------------------------------|--------------------------------|-------------|
+| macOS ARM64 (M1/M2/M3)         | md-to-whatsapp-darwin-arm64    | 1.7MB       |
+| Linux x64 (glibc)              | md-to-whatsapp-linux-x64-gnu   | 2.2MB       |
+| Windows x64                    | md-to-whatsapp-win32-x64-msvc  | 1.9MB       |
 
 ### Analysis
 

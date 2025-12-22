@@ -33,15 +33,15 @@ function getPackageName(): string {
   const arch = process.arch;
 
   if (platform === 'darwin' && arch === 'arm64') {
-    return '@md-to-whatsapp/darwin-arm64';
+    return 'md-to-whatsapp-darwin-arm64';
   } else if (platform === 'darwin' && arch === 'x64') {
-    return '@md-to-whatsapp/darwin-x64';
+    return 'md-to-whatsapp-darwin-x64';
   } else if (platform === 'linux' && arch === 'x64') {
-    return '@md-to-whatsapp/linux-x64-gnu';
+    return 'md-to-whatsapp-linux-x64-gnu';
   } else if (platform === 'linux' && arch === 'arm64') {
-    return '@md-to-whatsapp/linux-arm64-gnu';
+    return 'md-to-whatsapp-linux-arm64-gnu';
   } else if (platform === 'win32' && arch === 'x64') {
-    return '@md-to-whatsapp/win32-x64-msvc';
+    return 'md-to-whatsapp-win32-x64-msvc';
   }
   throw new Error(`Unsupported platform: ${platform}-${arch}`);
 }
