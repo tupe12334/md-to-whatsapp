@@ -43,28 +43,36 @@ Comparison of CLI performance between the TypeScript and Rust implementations of
 
 ## Package Size
 
-| Implementation | Package Size | Dependencies | Total Install Size |
-|----------------|--------------|--------------|-------------------|
-| **Rust**       | 5.7MB        | 0            | 5.8MB             |
-| **TypeScript** | 43KB         | 68 packages  | 5.1MB             |
+| Implementation | Main Package | Platform Binary | Total Install Size | Dependencies |
+|----------------|--------------|-----------------|-------------------|--------------|
+| **Rust (v0.3+)** | 6KB         | 1.7-2.2MB       | ~1.8MB            | 0            |
+| **Rust (v0.2)**  | 5.7MB       | (bundled)       | 5.8MB             | 0            |
+| **TypeScript**   | 43KB        | N/A             | 5.1MB             | 68 packages  |
 
 ### Native Binary Sizes (Rust)
 
-The Rust package includes pre-built binaries for multiple platforms:
+Platform-specific packages (installed as optional dependencies):
 
-| Platform         | Binary Size |
-|------------------|-------------|
-| darwin-arm64     | 1.7MB       |
-| linux-x64-gnu    | 2.2MB       |
-| win32-x64-msvc   | 1.9MB       |
+| Platform                       | Package                       | Binary Size |
+|--------------------------------|-------------------------------|-------------|
+| macOS ARM64 (M1/M2/M3)         | @md-to-whatsapp/darwin-arm64  | 1.7MB       |
+| Linux x64 (glibc)              | @md-to-whatsapp/linux-x64-gnu | 2.2MB       |
+| Windows x64                    | @md-to-whatsapp/win32-x64-msvc| 1.9MB       |
 
 ### Analysis
 
-While the Rust package itself is larger (5.7MB vs 43KB), this is because it includes pre-built native binaries for all supported platforms. The TypeScript version requires 68 runtime dependencies (remark-gfm, remark-parse, unified, and their transitive dependencies), resulting in a similar total install size.
+The Rust implementation uses optional dependencies to only download the binary for your platform:
 
-**Key trade-offs:**
-- **Rust**: Larger package, zero runtime dependencies, faster installation
-- **TypeScript**: Smaller package, many runtime dependencies, potential supply chain concerns
+- **v0.3+**: Uses `optionalDependencies` - npm/pnpm automatically downloads only your platform's binary
+- **v0.2**: Bundled all platform binaries in a single package (5.7MB)
+- **TypeScript**: Required 68 runtime dependencies (remark-gfm, remark-parse, unified)
+
+**Key advantages of Rust (v0.3+):**
+- ~70% smaller install size than previous version (1.8MB vs 5.8MB)
+- ~65% smaller than TypeScript version (1.8MB vs 5.1MB)
+- Zero runtime dependencies
+- Faster installation
+- Reduced supply chain risk
 
 ## Why Rust is Faster
 

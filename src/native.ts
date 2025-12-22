@@ -28,43 +28,67 @@ interface NativeConvertResult {
   unsupportedElements: NativeUnsupportedElement[];
 }
 
-function loadNativeBinding(): NativeBinding {
+function getPackageName(): string {
   const platform = process.platform;
   const arch = process.arch;
 
-  let moduleName: string;
+  if (platform === 'darwin' && arch === 'arm64') {
+    return '@md-to-whatsapp/darwin-arm64';
+  } else if (platform === 'darwin' && arch === 'x64') {
+    return '@md-to-whatsapp/darwin-x64';
+  } else if (platform === 'linux' && arch === 'x64') {
+    return '@md-to-whatsapp/linux-x64-gnu';
+  } else if (platform === 'linux' && arch === 'arm64') {
+    return '@md-to-whatsapp/linux-arm64-gnu';
+  } else if (platform === 'win32' && arch === 'x64') {
+    return '@md-to-whatsapp/win32-x64-msvc';
+  }
+  throw new Error(`Unsupported platform: ${platform}-${arch}`);
+}
 
-  if (platform === 'darwin') {
-    if (arch === 'arm64') {
-      moduleName = 'md-to-whatsapp.darwin-arm64.node';
-    } else {
-      moduleName = 'md-to-whatsapp.darwin-x64.node';
-    }
-  } else if (platform === 'linux') {
-    if (arch === 'arm64') {
-      moduleName = 'md-to-whatsapp.linux-arm64-gnu.node';
-    } else {
-      moduleName = 'md-to-whatsapp.linux-x64-gnu.node';
-    }
-  } else if (platform === 'win32') {
-    moduleName = 'md-to-whatsapp.win32-x64-msvc.node';
-  } else {
-    throw new Error('Unsupported platform: ' + platform + '-' + arch);
+function getLocalModuleName(): string {
+  const platform = process.platform;
+  const arch = process.arch;
+
+  if (platform === 'darwin' && arch === 'arm64') {
+    return 'md-to-whatsapp.darwin-arm64.node';
+  } else if (platform === 'darwin' && arch === 'x64') {
+    return 'md-to-whatsapp.darwin-x64.node';
+  } else if (platform === 'linux' && arch === 'x64') {
+    return 'md-to-whatsapp.linux-x64-gnu.node';
+  } else if (platform === 'linux' && arch === 'arm64') {
+    return 'md-to-whatsapp.linux-arm64-gnu.node';
+  } else if (platform === 'win32' && arch === 'x64') {
+    return 'md-to-whatsapp.win32-x64-msvc.node';
+  }
+  throw new Error(`Unsupported platform: ${platform}-${arch}`);
+}
+
+function loadNativeBinding(): NativeBinding {
+  const require = createRequire(import.meta.url);
+
+  // Try loading from optional dependency (npm package)
+  try {
+    const packageName = getPackageName();
+    return require(packageName) as NativeBinding;
+  } catch {
+    // Fall back to local .node file (development mode)
   }
 
-  const currentDir = dirname(fileURLToPath(import.meta.url));
-  const projectRoot = dirname(currentDir);
-  const modulePath = join(projectRoot, moduleName);
-
+  // Try loading from project root (for development)
   try {
-    const require = createRequire(import.meta.url);
+    const currentDir = dirname(fileURLToPath(import.meta.url));
+    const projectRoot = dirname(currentDir);
+    const modulePath = join(projectRoot, getLocalModuleName());
     return require(modulePath) as NativeBinding;
   } catch {
-    throw new Error(
-      'Failed to load native module for ' + platform + '-' + arch + '. ' +
-      'Make sure the native module is built for your platform.'
-    );
+    // Continue to error
   }
+
+  throw new Error(
+    `Failed to load native module for ${process.platform}-${process.arch}. ` +
+    'Make sure the native module is installed for your platform.'
+  );
 }
 
 export const nativeBinding = loadNativeBinding();

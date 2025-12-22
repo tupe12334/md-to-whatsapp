@@ -1,0 +1,17 @@
+{
+  "name": "@md-to-whatsapp/win32-x64-msvc",
+  "version": "0.2.0",
+  "description": "Windows x64 binary for md-to-whatsapp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tupe12334/md-to-whatsapp.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "os": ["win32"],
+  "cpu": ["x64"],
+  "main": "md-to-whatsapp.win32-x64-msvc.node",
+  "files": ["md-to-whatsapp.win32-x64-msvc.node"]
+}

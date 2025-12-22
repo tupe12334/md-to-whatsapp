@@ -11,6 +11,9 @@ native/target/
 index.d.ts
 index.js
 
+# Platform-specific npm packages (binaries are built in CI)
+npm/*/*.node
+
 # Secrets and credentials
 .env
 .env.*

@@ -78,12 +78,20 @@ jobs:
         with:
           path: artifacts
 
-      - name: Move artifacts
+      - name: Move artifacts to platform packages
         run: |
+          # Move binaries to their respective npm directories
+          cp artifacts/bindings-aarch64-apple-darwin/*.node npm/darwin-arm64/ 2>/dev/null || true
+          cp artifacts/bindings-x86_64-unknown-linux-gnu/*.node npm/linux-x64-gnu/ 2>/dev/null || true
+          cp artifacts/bindings-x86_64-pc-windows-msvc/*.node npm/win32-x64-msvc/ 2>/dev/null || true
+
+          # Also keep a copy in root for backward compatibility during development
           for dir in artifacts/bindings-*; do
             cp "$dir"/*.node . 2>/dev/null || true
           done
-          ls -la *.node || echo "No .node files found"
+
+          echo "Platform packages:"
+          ls -la npm/*/
 
       - name: Build TypeScript
         run: pnpm build:ts
@@ -91,10 +99,9 @@ jobs:
       - name: Check if version is published
         id: check
         run: |
-          PACKAGE_NAME=$(node -p "require('./package.json').name")
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
-          if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version 2>/dev/null; then
+          if npm view "md-to-whatsapp@${PACKAGE_VERSION}" version 2>/dev/null; then
             echo "Version ${PACKAGE_VERSION} already published"
             echo "should_publish=false" >> $GITHUB_OUTPUT
           else
@@ -102,7 +109,16 @@ jobs:
             echo "should_publish=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Publish to npm
+      - name: Publish platform packages
+        if: steps.check.outputs.should_publish == 'true'
+        run: |
+          cd npm/darwin-arm64 && npm publish --access public || true
+          cd ../linux-x64-gnu && npm publish --access public || true
+          cd ../win32-x64-msvc && npm publish --access public || true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish main package
         if: steps.check.outputs.should_publish == 'true'
         run: pnpm publish --no-git-checks --access public
         env:
