@@ -204,12 +204,16 @@ fn process_end_tag(state: &mut ProcessorState, tag: TagEnd) -> Result<(), napi::
         }
         TagEnd::Link => {
             state.in_link = false;
-            // Convert link to "text (url)" in warn mode
             if state.mode == UnsupportedMode::Warn {
-                state.output.push_str(&state.link_text);
-                state.output.push_str(" (");
-                state.output.push_str(&state.link_url);
-                state.output.push(')');
+                if state.link_text == state.link_url {
+                    // Text is the URL itself - just output once
+                    state.output.push_str(&state.link_url);
+                } else {
+                    // Text differs from URL - output both (no parentheses for clickable URL)
+                    state.output.push_str(&state.link_text);
+                    state.output.push(' ');
+                    state.output.push_str(&state.link_url);
+                }
             } else if state.mode == UnsupportedMode::Ignore {
                 state.output.push_str(&state.link_text);
             }
@@ -302,6 +306,12 @@ mod tests {
     #[test]
     fn test_link_warn() {
         let result = process_markdown("[click](https://example.com)", UnsupportedMode::Warn).unwrap();
-        assert_eq!(result.output, "click (https://example.com)");
+        assert_eq!(result.output, "click https://example.com");
+    }
+
+    #[test]
+    fn test_link_warn_duplicate_url() {
+        let result = process_markdown("[https://example.com](https://example.com)", UnsupportedMode::Warn).unwrap();
+        assert_eq!(result.output, "https://example.com");
     }
 }
