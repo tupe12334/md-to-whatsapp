@@ -1,6 +1,6 @@
 {
   "name": "@md-to-whatsapp/win32-x64-msvc",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Windows x64 binary for md-to-whatsapp",
   "repository": {
     "type": "git",

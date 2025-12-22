@@ -74,6 +74,16 @@ describe('convert', () => {
     expect(unsupported).toContain('heading');
     expect(unsupported).toContain('link');
   });
+
+  it('handles angle-bracket autolinks without duplication', () => {
+    const result = convert('<https://example.com>', { unsupportedMode: 'warn' });
+    expect(result.text).toBe('https://example.com');
+  });
+
+  it('handles markdown links with different text and url', () => {
+    const result = convert('[click here](https://example.com)', { unsupportedMode: 'warn' });
+    expect(result.text).toBe('click here https://example.com');
+  });
 });
 
 describe('convertToString', () => {

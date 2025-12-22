@@ -314,4 +314,10 @@ mod tests {
         let result = process_markdown("[https://example.com](https://example.com)", UnsupportedMode::Warn).unwrap();
         assert_eq!(result.output, "https://example.com");
     }
+
+    #[test]
+    fn test_autolink_angle_brackets() {
+        let result = process_markdown("<https://example.com>", UnsupportedMode::Warn).unwrap();
+        assert_eq!(result.output, "https://example.com");
+    }
 }
