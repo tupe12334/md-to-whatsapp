@@ -1,6 +1,6 @@
 {
   "name": "md-to-whatsapp-darwin-arm64",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "macOS ARM64 binary for md-to-whatsapp",
   "repository": {
     "type": "git",
