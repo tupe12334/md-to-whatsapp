@@ -1,0 +1,3 @@
+# CI/CD
+
+We want to have GitHub actions CI/CD that publishing the packages if the current version is not published yet, it will run the linter, build, cspell etc...
