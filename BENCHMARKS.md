@@ -41,6 +41,31 @@ Comparison of CLI performance between the TypeScript and Rust implementations of
 
 **Performance improvement: ~2.5x faster with Rust**
 
+## Package Size
+
+| Implementation | Package Size | Dependencies | Total Install Size |
+|----------------|--------------|--------------|-------------------|
+| **Rust**       | 5.7MB        | 0            | 5.8MB             |
+| **TypeScript** | 43KB         | 68 packages  | 5.1MB             |
+
+### Native Binary Sizes (Rust)
+
+The Rust package includes pre-built binaries for multiple platforms:
+
+| Platform         | Binary Size |
+|------------------|-------------|
+| darwin-arm64     | 1.7MB       |
+| linux-x64-gnu    | 2.2MB       |
+| win32-x64-msvc   | 1.9MB       |
+
+### Analysis
+
+While the Rust package itself is larger (5.7MB vs 43KB), this is because it includes pre-built native binaries for all supported platforms. The TypeScript version requires 68 runtime dependencies (remark-gfm, remark-parse, unified, and their transitive dependencies), resulting in a similar total install size.
+
+**Key trade-offs:**
+- **Rust**: Larger package, zero runtime dependencies, faster installation
+- **TypeScript**: Smaller package, many runtime dependencies, potential supply chain concerns
+
 ## Why Rust is Faster
 
 The Rust implementation achieves better performance due to:
