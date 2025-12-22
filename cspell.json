@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "whatsapp",
+    "strikethrough",
+    "monospace",
+    "remark",
+    "mdast",
+    "tsup",
+    "vitest",
+    "cspell",
+    "pnpm",
+    "blockquote",
+    "blockquotes"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "pnpm-lock.yaml",
+    "package-lock.json"
+  ]
+}
