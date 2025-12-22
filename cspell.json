@@ -22,7 +22,10 @@
     "gnueabihf",
     "msvc",
     "musl",
-    "aarch"
+    "aarch",
+    "libc",
+    "glibc",
+    "autolinks"
   ],
   "ignorePaths": [
     "node_modules",
