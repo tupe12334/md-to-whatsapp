@@ -1,6 +1,6 @@
 {
   "name": "md-to-whatsapp-linux-x64-gnu",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Linux x64 (glibc) binary for md-to-whatsapp",
   "repository": {
     "type": "git",

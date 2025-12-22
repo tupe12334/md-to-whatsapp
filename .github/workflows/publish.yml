@@ -112,14 +112,21 @@ jobs:
       - name: Publish platform packages
         if: steps.check.outputs.should_publish == 'true'
         run: |
-          cd npm/darwin-arm64 && npm publish --access public || true
-          cd ../linux-x64-gnu && npm publish --access public || true
-          cd ../win32-x64-msvc && npm publish --access public || true
+          for pkg in npm/darwin-arm64 npm/linux-x64-gnu npm/win32-x64-msvc; do
+            PKG_NAME=$(node -p "require('./$pkg/package.json').name")
+            PKG_VERSION=$(node -p "require('./$pkg/package.json').version")
+            if npm view "${PKG_NAME}@${PKG_VERSION}" version 2>/dev/null; then
+              echo "Skipping $PKG_NAME@$PKG_VERSION (already published)"
+            else
+              echo "Publishing $PKG_NAME@$PKG_VERSION"
+              cd $pkg && npm publish --access public && cd ../..
+            fi
+          done
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish main package
         if: steps.check.outputs.should_publish == 'true'
-        run: pnpm publish --no-git-checks --access public
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,6 +1,6 @@
 {
   "name": "md-to-whatsapp",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Convert Markdown formatting to WhatsApp message formatting",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -41,9 +41,9 @@
     "dist"
   ],
   "optionalDependencies": {
-    "md-to-whatsapp-darwin-arm64": "0.2.1",
-    "md-to-whatsapp-linux-x64-gnu": "0.2.1",
-    "md-to-whatsapp-win32-x64-msvc": "0.2.1"
+    "md-to-whatsapp-darwin-arm64": "0.2.2",
+    "md-to-whatsapp-linux-x64-gnu": "0.2.2",
+    "md-to-whatsapp-win32-x64-msvc": "0.2.2"
   },
   "scripts": {
     "build": "pnpm build:native && tsup",
