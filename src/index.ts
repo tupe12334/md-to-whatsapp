@@ -1,8 +1,4 @@
-export {
-  convert,
-  convertToString,
-  type ConvertOptions,
-  type ConvertResult,
-  type UnsupportedElement,
-  type UnsupportedMode
-} from './converter.js';
+export { convert } from './converter.js';
+export { convertToString } from './convertToString.js';
+export type { ConvertOptions, ConvertResult, UnsupportedElement, UnsupportedMode } from './types.js';
+export { UnsupportedElementError } from './errors.js';

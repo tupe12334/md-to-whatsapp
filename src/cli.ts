@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import { readFileSync } from 'node:fs';
-import { convert, type UnsupportedMode } from './converter.js';
+import { convert } from './converter.js';
+import { parseArgs } from './parseArgs.js';
+import { readFileSafely } from './fileReader.js';
 
 const HELP = `
 md-to-whatsapp - Convert Markdown to WhatsApp message formatting
@@ -24,34 +25,6 @@ Examples:
   md-to-whatsapp README.md
   md-to-whatsapp --mode strict input.md
 `;
-
-function parseArgs(args: string[]): { mode: UnsupportedMode; file?: string; help: boolean } {
-  let mode: UnsupportedMode = 'warn';
-  let file: string | undefined;
-  let help = false;
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-
-    if (arg === '--help' || arg === '-h') {
-      help = true;
-    } else if (arg === '--mode') {
-      const value = args[++i];
-      if (!value || !['strict', 'strip', 'warn', 'ignore'].includes(value)) {
-        console.error('Error: --mode must be one of: strict, strip, warn, ignore');
-        process.exit(1);
-      }
-      mode = value as UnsupportedMode;
-    } else if (!arg.startsWith('-')) {
-      file = arg;
-    } else {
-      console.error(`Unknown option: ${arg}`);
-      process.exit(1);
-    }
-  }
-
-  return { mode, file, help };
-}
 
 async function readStdin(): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -82,9 +55,13 @@ async function main(): Promise<void> {
 
   if (file) {
     try {
-      input = readFileSync(file, 'utf8');
+      input = readFileSafely(file);
     } catch (err) {
-      console.error(`Error reading file: ${file}`);
+      if (err instanceof Error) {
+        console.error('Error: ' + err.message);
+      } else {
+        console.error('Error reading file: ' + file);
+      }
       process.exit(1);
     }
   } else {
@@ -100,7 +77,11 @@ async function main(): Promise<void> {
       unsupportedMode: mode,
       onUnsupported: (element) => {
         if (mode === 'warn') {
-          console.error(`Warning: Unsupported element "${element.type}"${element.position ? ` at line ${element.position.start.line}` : ''}`);
+          let positionInfo = '';
+          if (element.position) {
+            positionInfo = ' at line ' + element.position.start.line;
+          }
+          console.error('Warning: Unsupported element "' + element.type + '"' + positionInfo);
         }
       }
     });
@@ -108,7 +89,7 @@ async function main(): Promise<void> {
     console.log(result.text);
   } catch (err) {
     if (err instanceof Error) {
-      console.error(`Error: ${err.message}`);
+      console.error('Error: ' + err.message);
     } else {
       console.error('An unknown error occurred');
     }

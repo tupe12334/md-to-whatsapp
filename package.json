@@ -47,6 +47,7 @@
     "cspell": "^9.4.0",
     "eslint": "^9.39.2",
     "eslint-config-agent": "^1.8.9",
+    "eslint-import-resolver-typescript": "^4.4.4",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

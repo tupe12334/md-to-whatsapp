@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { convert, convertToString } from '../src/converter.js';
+import { convert } from './converter.js';
+import { convertToString } from './convertToString.js';
 
 describe('convert', () => {
   describe('bold', () => {
