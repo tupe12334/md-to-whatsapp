@@ -3,6 +3,14 @@ dist/
 *.log
 .DS_Store
 
+# Rust build artifacts
+native/target/
+*.node
+
+# NAPI generated files
+index.d.ts
+index.js
+
 # Secrets and credentials
 .env
 .env.*

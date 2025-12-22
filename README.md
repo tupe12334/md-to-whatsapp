@@ -221,17 +221,36 @@ if (unsupported.length > 0) {
 }
 ```
 
+## Architecture
+
+This package uses a native Rust implementation for high-performance markdown parsing via [pulldown-cmark](https://crates.io/crates/pulldown-cmark). The Rust code is exposed to Node.js through N-API bindings using [napi-rs](https://napi.rs/).
+
+### Supported Platforms
+
+- macOS (x64, ARM64)
+- Linux (x64, ARM64)
+- Windows (x64)
+
 ## Development
 
 ```bash
 # Install dependencies
 pnpm install
 
-# Run tests
+# Build native module and TypeScript
+pnpm build
+
+# Build only native module
+pnpm build:native
+
+# Build only TypeScript
+pnpm build:ts
+
+# Run TypeScript tests
 pnpm test
 
-# Build
-pnpm build
+# Run Rust tests
+pnpm test:rust
 
 # Type check
 pnpm typecheck
@@ -242,6 +261,12 @@ pnpm lint
 # Spell check
 pnpm cspell
 ```
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm
+- Rust toolchain (for building from source)
 
 ## License
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-import { convert } from './converter.js';
-import { parseArgs } from './parseArgs.js';
-import { readFileSafely } from './fileReader.js';
+import { readFileSync } from 'node:fs';
+import { resolve, normalize } from 'node:path';
+import { convert } from './index.js';
+import type { UnsupportedMode } from './index.js';
 
 const HELP = `
 md-to-whatsapp - Convert Markdown to WhatsApp message formatting
@@ -26,6 +27,59 @@ Examples:
   md-to-whatsapp --mode strict input.md
 `;
 
+function isValidMode(value: string): value is UnsupportedMode {
+  return value === 'strict' || value === 'strip' || value === 'warn' || value === 'ignore';
+}
+
+function parseArgs(args: string[]): { mode: UnsupportedMode; file?: string; help: boolean } {
+  let mode: UnsupportedMode = 'warn';
+  let file: string | undefined;
+  let help = false;
+  const argsLength = args.length;
+  let index = 0;
+
+  while (index < argsLength) {
+    const currentArg = args[index];
+    if (!currentArg) {
+      index++;
+      continue;
+    }
+
+    if (currentArg === '--help' || currentArg === '-h') {
+      help = true;
+      index++;
+    } else if (currentArg === '--mode') {
+      index++;
+      if (index < argsLength) {
+        const value = args[index];
+        if (!value || !isValidMode(value)) {
+          console.error('Error: --mode must be one of: strict, strip, warn, ignore');
+          process.exit(1);
+        }
+        mode = value;
+        index++;
+      } else {
+        console.error('Error: --mode requires a value');
+        process.exit(1);
+      }
+    } else if (!currentArg.startsWith('-')) {
+      file = currentArg;
+      index++;
+    } else {
+      console.error('Unknown option: ' + currentArg);
+      process.exit(1);
+    }
+  }
+
+  return { mode, file, help };
+}
+
+function readFileSafely(filePath: string): string {
+  const normalizedPath = normalize(filePath);
+  const resolvedPath = resolve(normalizedPath);
+  return readFileSync(resolvedPath, 'utf8');
+}
+
 async function readStdin(): Promise<string> {
   return new Promise((resolve, reject) => {
     let data = '';
@@ -36,7 +90,7 @@ async function readStdin(): Promise<string> {
     }
 
     process.stdin.setEncoding('utf8');
-    process.stdin.on('data', chunk => data += chunk);
+    process.stdin.on('data', (chunk: string) => { data += chunk; });
     process.stdin.on('end', () => resolve(data));
     process.stdin.on('error', reject);
   });

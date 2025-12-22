@@ -25,6 +25,14 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
 
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: native
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -37,6 +45,9 @@ jobs:
 
       - name: Spell check
         run: pnpm cspell
+
+      - name: Rust tests
+        run: pnpm test:rust
 
       - name: Build
         run: pnpm build

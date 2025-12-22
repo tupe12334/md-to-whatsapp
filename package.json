@@ -1,6 +1,6 @@
 {
   "name": "md-to-whatsapp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Convert Markdown formatting to WhatsApp message formatting",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -18,31 +18,54 @@
       }
     }
   },
+  "napi": {
+    "name": "md-to-whatsapp",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "aarch64-apple-darwin",
+        "aarch64-linux-android",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
+        "armv7-unknown-linux-gnueabihf",
+        "x86_64-unknown-linux-musl",
+        "x86_64-unknown-freebsd",
+        "i686-pc-windows-msvc"
+      ]
+    }
+  },
   "bin": {
     "md-to-whatsapp": "./dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "*.node"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "pnpm build:native && tsup",
+    "build:native": "napi build --platform --release --cargo-cwd native",
+    "build:ts": "tsup",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:rust": "cd native && cargo test",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "cspell": "cspell \"**/*.{ts,js,json,md}\""
+    "cspell": "cspell \"**/*.{ts,js,json,md}\"",
+    "prepublishOnly": "napi prepublish -t npm"
   },
   "keywords": [
     "markdown",
     "whatsapp",
     "converter",
-    "formatting"
+    "formatting",
+    "rust",
+    "napi"
   ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/mdast": "^4.0.4",
+    "@napi-rs/cli": "^2.18.4",
     "@types/node": "^25.0.3",
     "cspell": "^9.4.0",
     "eslint": "^9.39.2",
@@ -51,10 +74,5 @@
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
-  },
-  "dependencies": {
-    "remark-gfm": "^4.0.1",
-    "remark-parse": "^11.0.0",
-    "unified": "^11.0.5"
   }
 }

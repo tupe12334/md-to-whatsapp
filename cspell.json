@@ -13,12 +13,25 @@
     "cspell",
     "pnpm",
     "blockquote",
-    "blockquotes"
+    "blockquotes",
+    "napi",
+    "pulldown",
+    "cmark",
+    "dtolnay",
+    "armv",
+    "gnueabihf",
+    "msvc",
+    "musl",
+    "aarch"
   ],
   "ignorePaths": [
     "node_modules",
     "dist",
+    "native/target",
     "pnpm-lock.yaml",
-    "package-lock.json"
+    "package-lock.json",
+    "index.d.ts",
+    "index.js",
+    "*.node"
   ]
 }
