@@ -2,3 +2,14 @@ node_modules/
 dist/
 *.log
 .DS_Store
+
+# Secrets and credentials
+.env
+.env.*
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json
+secrets.json
+*.secret
