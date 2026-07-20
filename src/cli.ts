@@ -2,6 +2,7 @@
 
 import { readFileSync } from 'node:fs';
 import { resolve, normalize } from 'node:path';
+import { parseArgs as nodeParseArgs } from 'node:util';
 import { convert } from './index.js';
 import type { UnsupportedMode } from './index.js';
 
@@ -31,47 +32,48 @@ function isValidMode(value: string): value is UnsupportedMode {
   return value === 'strict' || value === 'strip' || value === 'warn' || value === 'ignore';
 }
 
-function parseArgs(args: string[]): { mode: UnsupportedMode; file?: string; help: boolean } {
-  let mode: UnsupportedMode = 'warn';
-  let file: string | undefined;
-  let help = false;
-  const argsLength = args.length;
-  let index = 0;
+function isErrorWithCode(err: unknown): err is Error & { code?: string } {
+  return err instanceof Error;
+}
 
-  while (index < argsLength) {
-    const currentArg = args[index];
-    if (!currentArg) {
-      index++;
-      continue;
-    }
+function extractUnknownOption(message: string): string {
+  const match = /Unknown option '(.+?)'/.exec(message);
+  if (match) {
+    return match[1];
+  }
+  return message;
+}
 
-    if (currentArg === '--help' || currentArg === '-h') {
-      help = true;
-      index++;
-    } else if (currentArg === '--mode') {
-      index++;
-      if (index < argsLength) {
-        const value = args[index];
-        if (!value || !isValidMode(value)) {
-          console.error('Error: --mode must be one of: strict, strip, warn, ignore');
-          process.exit(1);
-        }
-        mode = value;
-        index++;
-      } else {
-        console.error('Error: --mode requires a value');
-        process.exit(1);
-      }
-    } else if (!currentArg.startsWith('-')) {
-      file = currentArg;
-      index++;
+export function parseArgs(argv: string[]): { mode: UnsupportedMode; file?: string; help: boolean } {
+  let values: { mode: string; help: boolean };
+  let positionals: string[];
+
+  try {
+    ({ values, positionals } = nodeParseArgs({
+      args: argv,
+      options: {
+        mode: { type: 'string', default: 'warn' },
+        help: { type: 'boolean', short: 'h', default: false }
+      },
+      allowPositionals: true
+    }));
+  } catch (err) {
+    if (isErrorWithCode(err) && err.code === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE') {
+      console.error('Error: --mode requires a value');
     } else {
-      console.error('Unknown option: ' + currentArg);
-      process.exit(1);
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('Unknown option: ' + extractUnknownOption(message));
     }
+    process.exit(1);
   }
 
-  return { mode, file, help };
+  const mode = values.mode;
+  if (!isValidMode(mode)) {
+    console.error('Error: --mode must be one of: strict, strip, warn, ignore');
+    process.exit(1);
+  }
+
+  return { mode, file: positionals[0], help: values.help };
 }
 
 function readFileSafely(filePath: string): string {
@@ -151,4 +153,7 @@ async function main(): Promise<void> {
   }
 }
 
-main();
+// Only auto-run when executed directly (not when imported by tests).
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}

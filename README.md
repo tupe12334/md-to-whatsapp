@@ -264,7 +264,7 @@ pnpm cspell
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 18.19+
 - pnpm
 - Rust toolchain (for building from source)
 
