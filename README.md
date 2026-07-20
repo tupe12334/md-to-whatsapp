@@ -268,6 +268,10 @@ pnpm cspell
 - pnpm
 - Rust toolchain (for building from source)
 
+## See also
+
+- [moadim](https://moadim.io/) — loop engineering: build, schedule & run agent loops.
+
 ## License
 
 MIT
