@@ -53,7 +53,7 @@ pub fn process_markdown(markdown: &str, mode: UnsupportedMode) -> Result<Process
     }
 
     // Clean up excessive newlines
-    let re = regex::Regex::new(r"\n{3,}").unwrap();
+    let re = regex::Regex::new(r"\n{3,}").expect("hardcoded regex pattern is valid");
     state.output = re.replace_all(&state.output, "\n\n").trim().to_string();
 
     Ok(state)

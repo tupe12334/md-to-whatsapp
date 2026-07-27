@@ -1,4 +1,5 @@
 #![deny(clippy::all)]
+#![deny(clippy::unwrap_used)]
 
 mod errors;
 mod processor;
