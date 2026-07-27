@@ -114,7 +114,7 @@ const result = convert(markdown, {
 console.log(result.text);
 // *Welcome*
 //
-// This is *bold* and a link (https://example.com).
+// This is *bold* and a link https://example.com.
 
 console.log(result.unsupportedElements);
 // [{ type: 'heading', position: {...} }, { type: 'link', position: {...} }]
